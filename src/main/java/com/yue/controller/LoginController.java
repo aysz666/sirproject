@@ -13,7 +13,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@CrossOrigin
 public class LoginController {
     @Autowired
     private UserServiceimpl serviceimpl;

@@ -18,7 +18,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class Msg {
     int code;   //错误码
-    String Message; //消息提示
+    String message; //消息提示
     Map<String,Object> data= new HashMap<>();   //数据
 
     //无权访问

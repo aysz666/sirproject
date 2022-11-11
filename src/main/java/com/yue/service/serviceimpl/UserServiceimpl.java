@@ -7,9 +7,9 @@ import com.yue.dao.UserDao;
 import com.yue.domain.Project;
 import com.yue.domain.User;
 import com.yue.service.UserService;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -46,11 +46,20 @@ public class UserServiceimpl implements UserService {
         Timestamp date =  new Timestamp(System.currentTimeMillis());
         project.setSubmitTime(date);//设置提交时间
 
+//        shiro
 //        与用户关联
-        Subject subject = SecurityUtils.getSubject();
-        User user = (User) subject.getPrincipal();
-        String user_name = user.getUsername();
+//        Subject subject = SecurityUtils.getSubject();
+//        User user = (User) subject.getPrincipal();
+//        String user_name = user.getUsername();
+
+//        用账号查处用户的信息
+//        带优化
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String user_name = String.valueOf(authentication.getPrincipal());
+        User user = do_login(user_name);
         int user_id = user.getId();
+
+
         project.setUserId(user_id);
         project.setUserUsername(user_name);
 

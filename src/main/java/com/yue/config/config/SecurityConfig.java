@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -33,42 +34,56 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 //    自定义成功处理
     @Autowired
-JWTAuthenticationSuccessHandler authenticationSuccessHandler;
+    JWTAuthenticationSuccessHandler authenticationSuccessHandler;
 //    失败处理
     @Autowired
-JWTAuthenticationFailureHandler authenticationFailureHandler;
+    JWTAuthenticationFailureHandler authenticationFailureHandler;
 //    自定义认证
     @Autowired
     SelfAuthenticationProvider authenticationProvider;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+//        关闭csrf
         http.csrf().disable();
         http.headers().frameOptions().disable();
         http.cors();//开启跨域
         http.exceptionHandling()
+//                自定义认证失败处理
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+//                自定义权限不足处理
                 .accessDeniedHandler(jwtAccessDeniedHandler)
                 .and()
+//                关闭session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-//                添加拦截
+//                添加拦截jwt拦截
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 //                更改UsernamePasswordAuthenticationFilter拦截
                 .addFilterAt(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.authorizeRequests()
 //                路径权限配置
                 .antMatchers("/login").permitAll()
-                .antMatchers("/users/**").hasRole("user")
-                .antMatchers("/admins/**").hasRole("admin")
+//                放行接口文档
+                .antMatchers(
+
+                        "/swagger-ui.html",
+                        "/v3/**",
+                        "/swagger-ui/*",
+                        "/swagger-resources/**").permitAll()
                 .anyRequest().authenticated();
-        http.formLogin()
+
+//        已经在最后配置自定义登录
+//        登录接口配置
+//        http.formLogin()
 //                参数名称
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .successHandler(authenticationSuccessHandler)
-                .failureHandler(authenticationFailureHandler)
-                .and()
-                .sessionManagement().maximumSessions(2);//也许上线一个用户两个设备
+//                .usernameParameter("username")
+//                .passwordParameter("password")
+//                登录成功处理
+//                .successHandler(authenticationSuccessHandler)
+//                登录失败处理
+//                .failureHandler(authenticationFailureHandler)
+//                .and()
+//                .sessionManagement().maximumSessions(2);//也许上线一个用户两个设备
 
     }
     @Override
@@ -84,7 +99,7 @@ JWTAuthenticationFailureHandler authenticationFailureHandler;
         return new UserDetailsServiceImpl();
     }
 
-//    加载SelfUsernamePasswordAuthenticationFilter并配置
+    //    加载SelfUsernamePasswordAuthenticationFilter并配置
     SelfUsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter() throws Exception {
         SelfUsernamePasswordAuthenticationFilter filter = new SelfUsernamePasswordAuthenticationFilter();
         filter.setAuthenticationManager(super.authenticationManagerBean());

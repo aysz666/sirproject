@@ -2,14 +2,10 @@ package com.yue.controller;
 
 import com.yue.config.UploadFile;
 import com.yue.domain.Project;
-import com.yue.domain.User;
 import com.yue.service.serviceimpl.UserServiceimpl;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,9 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequiresPermissions("user")
 @RequestMapping("/users")
-@CrossOrigin
+@PreAuthorize("hasAnyRole('user')")
 public class UserController {
     @Autowired
     private UserServiceimpl userServiceimpl;

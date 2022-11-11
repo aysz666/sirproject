@@ -3,8 +3,8 @@ package com.yue.controller;
 import com.yue.config.UploadFile;
 import com.yue.domain.Project;
 import com.yue.service.serviceimpl.AdminSeviceimpl;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,9 +15,8 @@ import java.util.Map;
 //管理员业务
 
 @RestController
-@RequiresPermissions("admin")
 @RequestMapping("/admins")
-@CrossOrigin
+@PreAuthorize("hasAnyRole('admin')")
 public class AdminController {
     @Autowired
     private AdminSeviceimpl adminSeviceimpl;
