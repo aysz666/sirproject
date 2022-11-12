@@ -8,8 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
@@ -20,12 +18,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user==null){
                 throw  new UsernameNotFoundException("用户不存在");
         }
-        if (Objects.equals(user.getPosition(), "admin")) {
-            return new UserDetail(String.valueOf(user.getUsername()) ,user.getPassword(),AuthorityUtils.createAuthorityList("ROLE_"+"admin"));
-        }else{
-            return new UserDetail(String.valueOf(user.getUsername()) ,user.getPassword(),AuthorityUtils.createAuthorityList("ROLE_"+"user"));
+        return new UserDetail(username,user.getPassword(),AuthorityUtils.createAuthorityList("ROLE_"+user.getPosition()));
 
-        }
 
     }
 }

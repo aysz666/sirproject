@@ -16,7 +16,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/admins")
-@PreAuthorize("hasAnyRole('admin')")
 public class AdminController {
     @Autowired
     private AdminSeviceimpl adminSeviceimpl;

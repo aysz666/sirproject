@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -63,9 +64,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
 //                路径权限配置
                 .antMatchers("/login").permitAll()
+                .antMatchers("/admins/**").hasAnyRole("admin")
+                .antMatchers("/users/**").hasAnyRole("user")
 //                放行接口文档
                 .antMatchers(
-
                         "/swagger-ui.html",
                         "/v3/**",
                         "/swagger-ui/*",

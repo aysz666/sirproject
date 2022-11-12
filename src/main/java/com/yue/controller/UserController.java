@@ -17,7 +17,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
-@PreAuthorize("hasAnyRole('user')")
 public class UserController {
     @Autowired
     private UserServiceimpl userServiceimpl;
@@ -26,7 +25,6 @@ public class UserController {
     public List<Project> person_one(){
         UsernamePasswordAuthenticationToken principal = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         String user_name = String.valueOf(principal.getPrincipal());
-
         return userServiceimpl.get_my_project(user_name);
     }
     @GetMapping(value = "/my_all_project")
@@ -35,7 +33,6 @@ public class UserController {
 //        获取用户信息
         UsernamePasswordAuthenticationToken principal = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         String user_name = String.valueOf(principal.getPrincipal());
-
         return userServiceimpl.get_my_all_project(user_name);
     }
 
