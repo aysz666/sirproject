@@ -59,7 +59,7 @@ public class ProjectFu extends Project{
 
     private String userNumber;
 
-    private int clientNumber;
+    private String clientNumber;
 
     private String compileName;
 

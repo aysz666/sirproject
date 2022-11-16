@@ -2,6 +2,7 @@ package com.yue.service.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.yue.config.config.JWT.UserDetail;
 import com.yue.dao.ProjectDao;
 import com.yue.dao.ProjectFuDao;
@@ -99,6 +100,22 @@ public class UserServiceimpl implements UserService {
         QueryWrapper<ProjectFu> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(ProjectFu::getProjectId,id);
         return projectFuDao.selectList(wrapper);
+    }
+
+    @Override
+    public Boolean submit_file(int id, String filename) {
+        UpdateWrapper<Project> wrapper = new UpdateWrapper<>();
+        try{
+            wrapper.eq("id",id);
+            wrapper.set("date",filename);
+            projectDao.update(null,wrapper);
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+
+
     }
 
 }

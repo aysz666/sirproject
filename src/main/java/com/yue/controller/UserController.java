@@ -58,18 +58,24 @@ public class UserController {
         return userServiceimpl.get_my_all_project(user_name);
     }
 
-    @PostMapping(value = "/submit")
-    @ApiOperation("添加或修改项目,添加项目是不可以带有项目id")
-    public Map<String,Object> submit_project(Project project, @RequestParam("file") MultipartFile[] file){
 
-        Map<String,Object> model = new HashMap<>();
+    @PostMapping("/submit/file")
+    public Map<String,Object> submit_file(@RequestParam("id") int id, @RequestParam("file") MultipartFile[] file){
         ArrayList<String> list  = new ArrayList<>();
+        Map<String,Object> model = new HashMap<>();
+        System.out.println(id);
+//        获取用户信息
+        UsernamePasswordAuthenticationToken principal = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserDetail userDetail = (UserDetail) principal.getPrincipal();
+        User user = userDetail.getUser();
+        String user_name = user.getUsername();
+
 //        传入文件到资源目录下
         if (file.length !=0){
             for (MultipartFile aFile : file){
                 if (!aFile.isEmpty()){
-                    list.add(project.getUsername()+aFile.getOriginalFilename());
-                    Boolean aBoolean = UploadFile.httpUpload(project.getUsername(),aFile);
+                    list.add(user_name+aFile.getOriginalFilename());
+                    Boolean aBoolean = UploadFile.httpUpload(user_name,aFile);
                     if (aBoolean){
                         model.put("file_msg","文件上传成功！");
                     }else{
@@ -78,11 +84,22 @@ public class UserController {
                 }
             }
         }
+//        int id  = Integer.parseInt((String) map.get("id"));
         if (!list.isEmpty()){
             String dateFile = String.join("*",list);//用*号分割所有文件命
-            project.setDate(dateFile);
+            Boolean flag = userServiceimpl.submit_file(id,dateFile);
+            if (flag){
+                model.put("file_msg","文件上传成功！");
+            }else{
+                model.put("file_msg","文件上传失败！");
+            }
         }
-
+        return model;
+    }
+    @PostMapping(value = "/submit")
+    @ApiOperation("添加或修改项目,添加项目是不可以带有项目id")
+    public Map<String,Object> submit_project(@RequestBody Project project){
+        Map<String,Object> model = new HashMap<>();
         Boolean flag = userServiceimpl.submit_projict(project);//插入数据库
 //        提示信息
         if(flag){

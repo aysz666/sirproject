@@ -2,14 +2,19 @@ package com.yue.config.config.JWT;
 
 import com.alibaba.fastjson.JSON;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yue.config.Msg;
 import com.yue.config.config.JSON.JsonResult;
 import com.yue.config.config.JSON.JwtUtils;
 import com.yue.config.config.JSON.ResultTool;
+import com.yue.dao.UserDao;
+import com.yue.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +30,9 @@ public class JWTAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private UserDao userDao;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         AuthenticationSuccessHandler.super.onAuthenticationSuccess(request, response, chain, authentication);
@@ -44,12 +52,17 @@ public class JWTAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
         boolean role = authorities.contains(new SimpleGrantedAuthority("ROLE_admin"));
 
+//        获取用户信息
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("username",authentication.getName());
+        User user = userDao.selectOne(wrapper);
+        String user_name  = user.getName();
         Msg msg;
         if (role){
-            msg = Msg.success("登陆成功！").add("token",jwt).add("role",9999);
+            msg = Msg.success("登陆成功！").add("token",jwt).add("role",9999).add("name",user_name);
         }
         else {
-            msg = Msg.success("登陆成功！").add("token",jwt).add("role",1111);
+            msg = Msg.success("登陆成功！").add("token",jwt).add("role",1111).add("name",user_name);
         }
         //处理编码方式，防止中文乱码的情况
         response.setContentType("text/json;charset=utf-8");

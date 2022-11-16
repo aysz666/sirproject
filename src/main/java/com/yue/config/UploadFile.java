@@ -6,12 +6,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 @Component
 public class UploadFile {
 //    上传文件
     public static Boolean httpUpload(String name,MultipartFile file) {
-        String fileName = file.getOriginalFilename();  // 文件名
+        String fileName = name +file.getOriginalFilename();
         //保存上传的资源文件路径，路径在部署jar包同级目录。
         String path = System.getProperty("user.dir")+"/static/upload/";
         File dir = new File(path);
@@ -30,9 +32,11 @@ public class UploadFile {
 //        File dest = new File(uploadFilePath + '/' + name +fileName);
 
 
-        File dest = new File(dir.getAbsolutePath() + '/' + name +fileName);
-        System.out.println(dest.getParentFile());
+        File dest =dest = new File(dir.getAbsolutePath() + '/' +fileName);
 
+
+        System.out.println(dest.getParentFile());
+        System.out.println(fileName);
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
         }
@@ -45,8 +49,6 @@ public class UploadFile {
     }
 //    文件下载
 public static Boolean fileDownLoad(HttpServletResponse response, String fileName){
-
-
     String uploadFilePath = System.getProperty("user.dir")+"/static/upload/";
     File dir = new File(uploadFilePath);
 
@@ -69,7 +71,7 @@ public static Boolean fileDownLoad(HttpServletResponse response, String fileName
     response.setContentLength((int) file.length());
     response.setHeader("Content-Disposition", "attachment;filename=" + fileName );
 
-    try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));) {
+    try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
         byte[] buff = new byte[1024];
         OutputStream os  = response.getOutputStream();
         int i = 0;

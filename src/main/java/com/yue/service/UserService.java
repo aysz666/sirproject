@@ -11,4 +11,6 @@ public interface UserService {
     User do_login(String username);
     Boolean submit_projict(Project project);
     List<ProjectFu> getFailing(int id);
+
+    Boolean submit_file(int id,String filename);
 }

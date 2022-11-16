@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 @TableName("project")
+@AllArgsConstructor
 public class Project implements Serializable {
 
     @TableId(type = IdType.AUTO)
@@ -59,7 +61,7 @@ public class Project implements Serializable {
 
     private String userNumber;
 
-    private int clientNumber;
+    private String clientNumber;
 
     private String compileName;
 
@@ -77,33 +79,4 @@ public class Project implements Serializable {
     private String userUsername;
     private int userId;
 
-    public Project(String projectName, String sectionName, String projectOwner, String clientUnit, String compileInstitution, String reviewSort, String inventoryNorm, String quotaSystem, Date approvalTime, String projectCondition, String projectAddress, String approvalNumber, String username, String clientUsername, String institutionNumber, String industrySort, String priceGist, float approvalPrice, String technicalNumber, String userNumber, int clientNumber, String compileName, float investPrice) {
-        this.projectName = projectName;
-        this.sectionName = sectionName;
-        this.projectOwner = projectOwner;
-        this.clientUnit = clientUnit;
-        this.compileInstitution = compileInstitution;
-        this.reviewSort = reviewSort;
-        this.inventoryNorm = inventoryNorm;
-        this.quotaSystem = quotaSystem;
-        this.approvalTime = approvalTime;
-        this.projectCondition = projectCondition;
-        this.projectAddress = projectAddress;
-        this.approvalNumber = approvalNumber;
-        this.username = username;
-        this.clientUsername = clientUsername;
-        this.institutionNumber = institutionNumber;
-        this.industrySort = industrySort;
-        this.priceGist = priceGist;
-        this.approvalPrice = approvalPrice;
-        this.technicalNumber = technicalNumber;
-        this.userNumber = userNumber;
-        this.clientNumber = clientNumber;
-        this.compileName = compileName;
-        this.investPrice = investPrice;
-    }
-
-    public Project(int i) {
-        this.state  = i;
-    }
 }
