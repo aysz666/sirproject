@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user==null){
                 throw  new UsernameNotFoundException("用户不存在");
         }
-        return new UserDetail(username,user.getPassword(),AuthorityUtils.createAuthorityList("ROLE_"+user.getPosition()));
+        return new UserDetail(user,username,user.getPassword(),AuthorityUtils.createAuthorityList("ROLE_"+user.getPosition()));
 
 
     }

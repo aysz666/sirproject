@@ -1,8 +1,13 @@
 package com.yue.controller;
 
 import com.yue.config.UploadFile;
+import com.yue.config.config.JWT.UserDetail;
 import com.yue.domain.Project;
+import com.yue.domain.ProjectFu;
+import com.yue.domain.User;
 import com.yue.service.serviceimpl.UserServiceimpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,26 +22,44 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
+@Api("用户相关的接口")
 public class UserController {
     @Autowired
     private UserServiceimpl userServiceimpl;
 
+    @ApiOperation("传入某个项目的id，返回被退回的历史记录")
+    @GetMapping("get/failing/{id}")
+    public List<ProjectFu> getFailing(@PathVariable("id") int id){
+        System.out.println(id);
+        return userServiceimpl.getFailing(id);
+    }
+
+
     @GetMapping(value = "/my_project")
+    @ApiOperation("获取当前项目")
     public List<Project> person_one(){
+//        获取用户信息
         UsernamePasswordAuthenticationToken principal = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        String user_name = String.valueOf(principal.getPrincipal());
+        UserDetail userDetail = (UserDetail) principal.getPrincipal();
+        User user = userDetail.getUser();
+        String user_name = user.getUsername();
+
         return userServiceimpl.get_my_project(user_name);
     }
     @GetMapping(value = "/my_all_project")
-    @ResponseBody
+    @ApiOperation("获取当前用户所有的项目")
     public List<Project> person_all(){
 //        获取用户信息
         UsernamePasswordAuthenticationToken principal = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        String user_name = String.valueOf(principal.getPrincipal());
+        UserDetail userDetail = (UserDetail) principal.getPrincipal();
+        User user = userDetail.getUser();
+        String user_name = user.getUsername();
+
         return userServiceimpl.get_my_all_project(user_name);
     }
 
     @PostMapping(value = "/submit")
+    @ApiOperation("添加或修改项目,添加项目是不可以带有项目id")
     public Map<String,Object> submit_project(Project project, @RequestParam("file") MultipartFile[] file){
 
         Map<String,Object> model = new HashMap<>();

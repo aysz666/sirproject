@@ -6,6 +6,15 @@ import org.springframework.security.core.userdetails.User;
 import java.util.Collection;
 
 public class UserDetail extends User {
+    public com.yue.domain.User getUser() {
+        return user;
+    }
+
+    public void setUser(com.yue.domain.User user) {
+        this.user = user;
+    }
+
+    private com.yue.domain.User user;
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
         return super.getAuthorities();
@@ -30,8 +39,10 @@ public class UserDetail extends User {
         return true;
     }
 
-    public UserDetail(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetail(com.yue.domain.User user, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
+        this.user = user;
+
     }
 
 }

@@ -2,12 +2,16 @@ package com.yue.service.serviceimpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.yue.config.config.JWT.UserDetail;
 import com.yue.dao.ProjectDao;
+import com.yue.dao.ProjectFuDao;
 import com.yue.dao.UserDao;
 import com.yue.domain.Project;
+import com.yue.domain.ProjectFu;
 import com.yue.domain.User;
 import com.yue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,9 @@ public class UserServiceimpl implements UserService {
     private ProjectDao projectDao;
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private ProjectFuDao projectFuDao;
     @Override
     public List<Project> get_my_project(String name) {
         LambdaQueryWrapper<Project> wrapper = new LambdaQueryWrapper<>();
@@ -54,20 +61,29 @@ public class UserServiceimpl implements UserService {
 
 //        用账号查处用户的信息
 //        带优化
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String user_name = String.valueOf(authentication.getPrincipal());
-        User user = do_login(user_name);
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String user_name = String.valueOf(authentication.getPrincipal());
+//        User user = do_login(user_name);
+//        int user_id = user.getId();
+
+//        获取用户信息
+        UsernamePasswordAuthenticationToken principal = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserDetail userDetail = (UserDetail) principal.getPrincipal();
+        User user = userDetail.getUser();
+        String user_name = user.getUsername();
         int user_id = user.getId();
 
 
+//        关联用户信息
         project.setUserId(user_id);
         project.setUserUsername(user_name);
 
         try{
+//            如果状态为-1，则改为0表审核中，若状态为-2或1，需要插入操作
             if(project.getState()==-1){
                 project.setState(0);//设置项目状态为进行中
                 projectDao.updateById(project);
-            }else if(project.getState()==1||project.getState()==-2){
+            }else {
                 project.setState(0);//设置项目状态为进行中
                 projectDao.insert(project);
             }
@@ -77,6 +93,12 @@ public class UserServiceimpl implements UserService {
             return false;
         }
         return true;
+    }
+    @Override
+    public List<ProjectFu> getFailing(int id){
+        QueryWrapper<ProjectFu> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(ProjectFu::getProjectId,id);
+        return projectFuDao.selectList(wrapper);
     }
 
 }

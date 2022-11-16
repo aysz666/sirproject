@@ -64,9 +64,9 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
         System.out.println(userDetail.getAuthorities());
         UsernamePasswordAuthenticationToken authentication =
                 // 参数: 用户名 密码 权限信息
-                new UsernamePasswordAuthenticationToken(username,null,userDetail.getAuthorities());
-
+                new UsernamePasswordAuthenticationToken(userDetail,null,userDetail.getAuthorities());
         //后续security就能获取到当前登录的用户信息了，也就完成了用户认证。
+//        存入用户所有信心
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         chain.doFilter(request,response);

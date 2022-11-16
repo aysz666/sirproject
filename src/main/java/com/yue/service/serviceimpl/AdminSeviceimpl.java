@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.yue.dao.ProjectDao;
+import com.yue.dao.ProjectFuDao;
 import com.yue.domain.Project;
+import com.yue.domain.ProjectFu;
 import com.yue.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ public class AdminSeviceimpl implements AdminService {
 
     @Autowired
     private ProjectDao projectDao;
+    @Autowired
+    private ProjectFuDao projectFuDao;
 
     public List<Project> get_all_project(){
         QueryWrapper<Project> wrapper = new QueryWrapper<>();
@@ -42,6 +46,14 @@ public class AdminSeviceimpl implements AdminService {
         wrapper.set("suggestion",suggestion);
         try{
             projectDao.update(null,wrapper);
+            if (Integer.parseInt(state)==-1){
+                QueryWrapper<Project> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("id",Integer.parseInt(id));
+                ProjectFu projectFu = (ProjectFu) projectDao.selectOne(queryWrapper);
+                projectFu.setProjectId(Integer.parseInt(id));
+
+                projectFuDao.insert(projectFu);
+            }
             return true;
         }
         catch (Exception e){
