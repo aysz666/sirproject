@@ -17,6 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/admins")
+@CrossOrigin
 @Api("管理员相关")
 public class AdminController {
     @Autowired
@@ -59,6 +60,7 @@ public class AdminController {
         }
         return maps;
     }
+
     @GetMapping("/get_date")
     @ApiOperation("下载附件，需要传文件名称")
     public Map<String,Object> get_date(String documentName, HttpServletResponse response){

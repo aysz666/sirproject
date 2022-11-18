@@ -1,5 +1,6 @@
 package com.yue.controller;
 
+import com.yue.config.CreateID;
 import com.yue.config.UploadFile;
 import com.yue.config.config.JWT.UserDetail;
 import com.yue.domain.Project;
@@ -9,7 +10,6 @@ import com.yue.service.serviceimpl.UserServiceimpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -64,16 +64,12 @@ public class UserController {
         ArrayList<String> list  = new ArrayList<>();
         Map<String,Object> model = new HashMap<>();
         System.out.println(id);
-//        获取用户信息
-        UsernamePasswordAuthenticationToken principal = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        UserDetail userDetail = (UserDetail) principal.getPrincipal();
-        User user = userDetail.getUser();
-        String user_name = user.getUsername();
 
 //        传入文件到资源目录下
         if (file.length !=0){
             for (MultipartFile aFile : file){
                 if (!aFile.isEmpty()){
+                    String user_name = CreateID.generateSequenceNo();
                     list.add(user_name+aFile.getOriginalFilename());
                     Boolean aBoolean = UploadFile.httpUpload(user_name,aFile);
                     if (aBoolean){

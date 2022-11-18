@@ -1,7 +1,5 @@
 package com.yue.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -15,8 +13,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("project_fu")
-public class ProjectFu extends Project{
-    @TableId(type = IdType.AUTO)
+public class ProjectFu{
+
     private int id;
 
     private String projectName;

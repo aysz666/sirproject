@@ -79,4 +79,41 @@ public class Project implements Serializable {
     private String userUsername;
     private int userId;
 
+
+    public ProjectFu toFu(){
+        ProjectFu fu = new ProjectFu();
+        fu.setProjectId(this.id);
+        fu.setDate(this.date);
+        fu.setApprovalNumber(this.approvalNumber);
+        fu.setClientNumber(this.clientNumber);
+        fu.setApprovalPrice(this.approvalPrice);
+        fu.setClientUnit(this.clientUnit);
+        fu.setInventoryNorm(this.inventoryNorm);
+        fu.setCompileName(this.compileName);
+        fu.setCompileInstitution(this.compileInstitution);
+        fu.setPriceGist(this.priceGist);
+        fu.setIndustrySort(this.industrySort);
+        fu.setProjectOwner(this.projectOwner);
+        fu.setUserUsername(this.userUsername);
+        fu.setUserNumber(this.userNumber);
+        fu.setProjectAddress(this.projectAddress);
+        fu.setState(-1);
+        fu.setSuggestion(this.suggestion);
+        fu.setApprovalTime(this.approvalTime);
+        fu.setTechnicalNumber(this.technicalNumber);
+        fu.setSubmitTime(this.submitTime);
+        fu.setSectionName(this.sectionName);
+        fu.setInstitutionNumber(this.institutionNumber);
+        fu.setUserId(this.userId);
+        fu.setQuotaSystem(this.quotaSystem);
+        fu.setProjectName(this.projectName);
+        fu.setReviewSort(this.reviewSort);
+        fu.setProjectCondition(this.projectCondition);
+        fu.setUsername(this.username);
+        fu.setClientUsername(this.clientUsername);
+        fu.setInvestPrice(this.investPrice);
+
+        return fu;
+    }
+
 }

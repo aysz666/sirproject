@@ -49,9 +49,7 @@ public class AdminSeviceimpl implements AdminService {
             if (Integer.parseInt(state)==-1){
                 QueryWrapper<Project> queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("id",Integer.parseInt(id));
-                ProjectFu projectFu = (ProjectFu) projectDao.selectOne(queryWrapper);
-                projectFu.setProjectId(Integer.parseInt(id));
-
+                ProjectFu projectFu =projectDao.selectOne(queryWrapper).toFu();
                 projectFuDao.insert(projectFu);
             }
             return true;

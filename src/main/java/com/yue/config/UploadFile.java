@@ -1,19 +1,16 @@
 package com.yue.config;
 
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
 @Component
 public class UploadFile {
 //    上传文件
     public static Boolean httpUpload(String name,MultipartFile file) {
-        String fileName = name +file.getOriginalFilename();
+        String fileName = name + file.getOriginalFilename();
         //保存上传的资源文件路径，路径在部署jar包同级目录。
         String path = System.getProperty("user.dir")+"/static/upload/";
         File dir = new File(path);
@@ -32,10 +29,10 @@ public class UploadFile {
 //        File dest = new File(uploadFilePath + '/' + name +fileName);
 
 
-        File dest =dest = new File(dir.getAbsolutePath() + '/' +fileName);
+        File dest = new File(dir.getAbsolutePath() + '/' +fileName);
 
 
-        System.out.println(dest.getParentFile());
+        System.out.println(dest.getAbsolutePath());
         System.out.println(fileName);
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
@@ -61,7 +58,8 @@ public static Boolean fileDownLoad(HttpServletResponse response, String fileName
 //    }
 //    File file = new File(uploadFilePath + fileName);
 
-    File file = new File(dir.getAbsolutePath() +'/'+ fileName);
+    File file = null;
+    file = new File(dir.getAbsolutePath() +'/'+ fileName);
     if(!file.exists()){
         return false;
     }
@@ -70,6 +68,9 @@ public static Boolean fileDownLoad(HttpServletResponse response, String fileName
     response.setCharacterEncoding("utf-8");
     response.setContentLength((int) file.length());
     response.setHeader("Content-Disposition", "attachment;filename=" + fileName );
+
+//    必要的文件下载跨域问题
+    response.setHeader("Access-Control-Allow-Origin", "*");
 
     try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
         byte[] buff = new byte[1024];
@@ -80,6 +81,7 @@ public static Boolean fileDownLoad(HttpServletResponse response, String fileName
             os.flush();
         }
     } catch (IOException e) {
+        System.out.println(e);
         return false;
     }
     return true;
